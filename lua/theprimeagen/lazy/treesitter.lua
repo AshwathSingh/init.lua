@@ -18,6 +18,7 @@ return {
 					"jsdoc",
 					"bash",
 					"go",
+					"python",
 				},
 
 				-- Install parsers synchronously (only applied to `ensure_installed`)
@@ -36,7 +37,6 @@ return {
 					enable = true,
 					disable = function(lang, buf)
 						if lang == "html" then
-							print("disabled")
 							return true
 						end
 
