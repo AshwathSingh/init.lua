@@ -1,91 +1,97 @@
-function ColorMyPencils(color)
-	color = color or "rose-pine-moon"
-	vim.cmd.colorscheme(color)
-
+local function apply_transparency()
+	-- Core transparency
 	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
+
+	-- Telescope transparency (find/grep pickers)
+	vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopePromptTitle", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = "none" })
+
+	-- Harpoon transparency (v1/v2 highlight group names)
+	vim.api.nvim_set_hl(0, "HarpoonWindow", { bg = "none" })
+	vim.api.nvim_set_hl(0, "HarpoonBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "HarpoonNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "HarpoonInactive", { bg = "none" })
+	vim.api.nvim_set_hl(0, "HarpoonActive", { bg = "none" })
 end
+
+function ColorMyPencils(color)
+	color = color or "rose-pine"
+	vim.cmd.colorscheme(color)
+	apply_transparency()
+end
+
+-- Re-apply transparency whenever a colorscheme loads
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = function()
+		apply_transparency()
+	end,
+})
+
+-- =========================
+-- Plugins (Colorschemes)
+-- =========================
 
 return {
 
-    {
-        "erikbackman/brightburn.vim",
-    },
+	-- Rose Pine (PRIMARY THEME)
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("rose-pine").setup({
+				disable_background = true,
+				styles = {
+					italic = false,
+				},
+			})
 
-    {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        opts = {},
-        config = function()
-            ColorMyPencils()
-        end
-    },
-    {
-        "ellisonleao/gruvbox.nvim",
-        name = "gruvbox",
-        config = function()
-            require("gruvbox").setup({
-                terminal_colors = true, -- add neovim terminal colors
-                undercurl = true,
-                underline = false,
-                bold = true,
-                italic = {
-                    strings = false,
-                    emphasis = false,
-                    comments = false,
-                    operators = false,
-                    folds = false,
-                },
-                strikethrough = true,
-                invert_selection = false,
-                invert_signs = false,
-                invert_tabline = false,
-                invert_intend_guides = false,
-                inverse = true, -- invert background for search, diffs, statuslines and errors
-                contrast = "", -- can be "hard", "soft" or empty string
-                palette_overrides = {},
-                overrides = {},
-                dim_inactive = false,
-                transparent_mode = false,
-            })
-        end,
-    },
-    {
-        "folke/tokyonight.nvim",
-        config = function()
-            require("tokyonight").setup({
-                -- your configuration comes here
-                -- or leave it empty to use the default settings
-                style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-                transparent = true, -- Enable this to disable setting the background color
-                terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
-                styles = {
-                    -- Style to be applied to different syntax groups
-                    -- Value is any valid attr-list value for `:help nvim_set_hl`
-                    comments = { italic = false },
-                    keywords = { italic = false },
-                    -- Background styles. Can be "dark", "transparent" or "normal"
-                    sidebars = "dark", -- style for sidebars, see below
-                    floats = "dark", -- style for floating windows
-                },
-            })
-        end
-    },
+			ColorMyPencils("rose-pine")
+		end,
+	},
 
-    {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        config = function()
-            require('rose-pine').setup({
-                disable_background = true,
-                styles = {
-                    italic = false,
-                },
-            })
+	-- Tokyonight (optional fallback / switch manually)
+	{
+		"folke/tokyonight.nvim",
+		lazy = true,
+		config = function()
+			require("tokyonight").setup({
+				style = "moon",
+				transparent = true,
+				styles = {
+					sidebars = "transparent",
+					floats = "transparent",
+				},
+			})
+		end,
+	},
 
-            ColorMyPencils();
-        end
-    },
+	-- Gruvbox (kept but NOT auto-enabled)
+	{
+		"ellisonleao/gruvbox.nvim",
+		name = "gruvbox",
+		lazy = true,
+		config = function()
+			require("gruvbox").setup({
+				transparent_mode = true,
+			})
+		end,
+	},
 
-
+	-- Brightburn (kept as optional theme)
+	{
+		"erikbackman/brightburn.vim",
+		lazy = true,
+	},
 }
