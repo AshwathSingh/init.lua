@@ -1,36 +1,49 @@
+-- =========================
+-- Transparency + Contrast
+-- =========================
+
 local function apply_transparency()
-	-- Core transparency
-	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "Pmenu", { bg = "none" })
+	-- Base editor (transparent)
+	vim.api.nvim_set_hl(0, "Normal", { bg = "none", fg = "#e0def4" })
+	vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 
-	-- Telescope transparency (find/grep pickers)
-	vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopePromptTitle", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = "none" })
+	-- Floating windows (IMPORTANT: give them a base)
+	local float_bg = "#1f1d2e"
+	vim.api.nvim_set_hl(0, "NormalFloat", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "Pmenu", { bg = float_bg })
 
-	-- Harpoon transparency (v1/v2 highlight group names)
-	vim.api.nvim_set_hl(0, "HarpoonWindow", { bg = "none" })
-	vim.api.nvim_set_hl(0, "HarpoonBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "HarpoonNormal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "HarpoonInactive", { bg = "none" })
-	vim.api.nvim_set_hl(0, "HarpoonActive", { bg = "none" })
+	-- Telescope (same idea: not fully transparent)
+	vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = float_bg })
+
+	-- Harpoon (keep consistent)
+	vim.api.nvim_set_hl(0, "HarpoonWindow", { bg = float_bg })
+	vim.api.nvim_set_hl(0, "HarpoonBorder", { bg = float_bg })
+
+	-- 🔥 Contrast boosters
+	vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a273f" })
+	vim.api.nvim_set_hl(0, "Visual", { bg = "#403d52" })
+
+	vim.api.nvim_set_hl(0, "Comment", { fg = "#6e6a86", italic = false })
+	vim.api.nvim_set_hl(0, "LineNr", { fg = "#555169" })
+	vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#c4a7e7" })
 end
 
+-- =========================
+-- Colorscheme loader
+-- =========================
+
 function ColorMyPencils(color)
-	color = color or "rose-pine"
+	color = color or "rose-pine-moon" -- darker variant = better contrast
 	vim.cmd.colorscheme(color)
 	apply_transparency()
 end
 
--- Re-apply transparency whenever a colorscheme loads
+-- Re-apply after any colorscheme change
 vim.api.nvim_create_autocmd("ColorScheme", {
 	callback = function()
 		apply_transparency()
@@ -43,7 +56,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 return {
 
-	-- Rose Pine (PRIMARY THEME)
+	-- 🌙 Rose Pine (PRIMARY)
 	{
 		"rose-pine/neovim",
 		name = "rose-pine",
@@ -57,11 +70,11 @@ return {
 				},
 			})
 
-			ColorMyPencils("rose-pine")
+			ColorMyPencils("rose-pine-moon")
 		end,
 	},
 
-	-- Tokyonight (optional fallback / switch manually)
+	-- 🌃 Tokyonight (optional)
 	{
 		"folke/tokyonight.nvim",
 		lazy = true,
@@ -71,27 +84,30 @@ return {
 				transparent = true,
 				styles = {
 					sidebars = "transparent",
-					floats = "transparent",
+					floats = "dark", -- subtle contrast instead of full transparent
 				},
 			})
 		end,
 	},
 
-	-- Gruvbox (kept but NOT auto-enabled)
+	-- 🟤 Gruvbox (optional high-contrast fallback)
 	{
 		"ellisonleao/gruvbox.nvim",
 		name = "gruvbox",
 		lazy = true,
 		config = function()
 			require("gruvbox").setup({
-				transparent_mode = true,
+				contrast = "hard",
+				transparent_mode = false,
 			})
 		end,
 	},
 
-	-- Brightburn (kept as optional theme)
+	-- 🔥 Brightburn (optional)
 	{
 		"erikbackman/brightburn.vim",
 		lazy = true,
 	},
 }
+
+
