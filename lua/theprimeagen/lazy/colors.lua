@@ -13,14 +13,6 @@ return {
     },
 
     {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        opts = {},
-        config = function()
-            ColorMyPencils()
-        end
-    },
-    {
         "ellisonleao/gruvbox.nvim",
         name = "gruvbox",
         config = function()
@@ -77,7 +69,7 @@ return {
         name = "rose-pine",
         config = function()
             require('rose-pine').setup({
-                disable_background = true,
+               disable_background = true,
                 styles = {
                     italic = false,
                 },
